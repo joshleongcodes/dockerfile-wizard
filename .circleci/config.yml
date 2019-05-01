@@ -90,19 +90,3 @@ workflows:
           context: org-global
           requires:
             - build
-      - run:
-          context: org-global
-          filters:
-            branches: { ignore: 'staging' } # All branches except staging
-            tags: { ignore: '/.*/' }        # Ignore all tags
-      # With approval (only for tags and staging branch)
-      - run-with-approval:
-          context: org-global
-          filters:
-            tags: { only: '/.*/' }          # All branches and all tags
-          requires: ['approve']             # But requires approval (which is filtering)
-      - approve:
-          type: approval
-          filters:
-            branches: { only: 'staging' }   # Ignore all branches except staging
-            tags: { only: '/.*/' }          # All tags
