@@ -4,20 +4,20 @@ image_config: &image_config
   # either as project-specific environment variables
   # or as resources in your organization's org-global Context
 
-  IMAGE_NAME: docker-wizard-sample
+  IMAGE_NAME: testcafe
 
-  IMAGE_TAG: latest
+  IMAGE_TAG: v1
 
   # NOTE: if you're modifying this config.yml file manually
   # rather than using the included setup script,
   # make sure you also add the values of your IMAGE_NAME & IMAGE_TAG variables
   # to the `test_image` job (line 55)
 
-  LINUX_VERSION: UBUNTU_TRUSTY
+  LINUX_VERSION: UBUNTU_XENIAL
 
   # RUBY_VERSION_NUM: # pick a version from https://cache.ruby-lang.org/pub/ruby
 
-  # NODE_VERSION_NUM: # pick a version from https://nodejs.org/dist
+  NODE_VERSION_NUM: 10.15.3
 
   # PYTHON_VERSION_NUM: # pick a version from https://python.org/ftp/python
 
@@ -29,7 +29,7 @@ image_config: &image_config
 
   DOCKERIZE: true
 
-  BROWSERS: false
+  BROWSERS: true
 
 version: 2
 jobs:
@@ -54,7 +54,7 @@ jobs:
 
   test_image:
     docker:
-      - image: $DOCKER_USERNAME/testcafe:test
+      - image: $DOCKER_USERNAME/testcafe:v1
         environment:
           <<: *image_config
 
@@ -63,8 +63,8 @@ jobs:
 
       - run:
           name: start Xvfb for phantomjs test
-          # command: Xvfb :99
-          # background: true
+          command: Xvfb :99
+          background: true
 
       - run:
           name: bats tests
@@ -73,6 +73,7 @@ jobs:
             bats scripts/tests.bats | \
             perl scripts/tap-to-junit.sh > \
             test_results/bats/results.xml
+
       - store_test_results:
           path: test_results
 
